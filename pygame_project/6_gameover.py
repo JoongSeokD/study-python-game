@@ -37,7 +37,8 @@ character_x_pos = (screen_width / 2) - (character_width / 2)
 character_y_pos = screen_height - character_height - stage_height
  
 # 캐릭터 이동 방향
-character_to_x = 0
+character_to_x_LEFT=0
+character_to_x_RIGHT=0
 
 # 캐릭터 이동 속도
 character_speed = 5
@@ -99,19 +100,21 @@ while running:
             running = False 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT: # 캐릭터를 왼쪽으로
-                character_to_x -= character_speed
+                character_to_x_LEFT -= character_speed
             elif event.key == pygame.K_RIGHT: # 캐릭터를 오른쪽으로
-                character_to_x += character_speed
+                character_to_x_RIGHT += character_speed
             elif event.key == pygame.K_SPACE: #무기 발사
                 weapon_x_pos = character_x_pos + (character_width / 2) - (weapon_width / 2)
                 weapon_y_pos = character_y_pos
                 weapons.append([weapon_x_pos, weapon_y_pos])
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                character_to_x = 0
+            if event.key == pygame.K_LEFT:
+                character_to_x_LEFT = 0
+            if event.key == pygame.K_RIGHT:
+                character_to_x_RIGHT = 0
 
     # 3. 게임 캐릭터 위치 정의
-    character_x_pos += character_to_x
+    character_x_pos += character_to_x_LEFT + character_to_x_RIGHT
 
     if character_x_pos < 0:
         character_x_pos = 0
@@ -208,7 +211,7 @@ while running:
                     
                     # 오른쪽으로 튕겨나가는 작은 공    
                     balls.append({
-                        "pos_x": ball_pos_x + (ball_width / 2)  (small_ball_width / 2), # 공의 x 좌표
+                        "pos_x": ball_pos_x + (ball_width / 2) - (small_ball_width / 2), # 공의 x 좌표
                         "pos_y": ball_pos_y + (ball_height / 2) - (small_ball_height / 2),  # 공의 y 좌표
                         "img_idx" : ball_img_idx + 1, # 공의 이미지 인덱스
                         "to_x": 3, # x축 이동방향 -3 이면 왼쪽으로 3이면 오른쪽으로
@@ -216,7 +219,9 @@ while running:
                         "init_spd_y": ball_speed_y[ball_img_idx + 1]}) # y 최초 속도
 
                 break
-
+        else:
+            continue
+        break
 
 
     # 충돌된 공 or 무기 없애기
